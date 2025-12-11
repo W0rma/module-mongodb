@@ -41,7 +41,13 @@ final class MongoDbTest extends Unit
             $this->markTestSkipped('MongoDB is not installed');
         }
 
-        $cleanupDirty = in_array('cleanup-dirty', $this->getGroups());
+        // Compatibility with PHPUnit 10
+        if (method_exists($this, 'groups')) {
+            $groups = $this->groups();
+        } else {
+            $groups = $this->getGroups();
+        }
+        $cleanupDirty = in_array('cleanup-dirty', $groups);
         $config = $this->mongoConfig + ['cleanup' => $cleanupDirty ? 'dirty' : true];
 
         $client = new \MongoDB\Client();
